@@ -1,5 +1,5 @@
 # double-square
-## Number theoretic software: compute sequences of multiples of prime powers etc
+## Number-theoretic software: compute sequences of multiples of prime powers etc
 
 This software is able to find gaps between squarefree, cubefree numbers or similar and is based on an algorithm published by Louis Marmet in [1]
 
