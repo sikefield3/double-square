@@ -102,10 +102,10 @@ int main(int argc, char **argv) {
 	string sVersion = "Version: 1.0.0, Date: 05.03.2019 ";
 	cout << sVersion << endl;
 	// callSQF();	
-// 	callSQFMarmet();
+ 	callSQFMarmet();
 // 	checkNTLPrimeFunc();
 //	testOverFlow();
 // 	testFactor();
-	callCheckResult();
+	// callCheckResult();
     return 0;
 }
