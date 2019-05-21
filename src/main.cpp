@@ -99,7 +99,7 @@ void callCheckResult(){
 	cr.run();
 }
 int main(int argc, char **argv) {
-	string sVersion = "Version: 1.0.0, Date: 05.03.2019 ";
+	string sVersion = "Version: 1.0.1, Date: 21.05.2019 ";
 	cout << sVersion << endl;
 	// callSQF();	
  	callSQFMarmet();
