@@ -19,6 +19,7 @@
 
 #include "sqfmarmet.h"
 
+
 sqfMarmet::sqfMarmet() {
     initNumArrays();
 }
@@ -81,11 +82,13 @@ function<UBNUM(int, UBNUM, UBNUM)> sqfMarmet::func_getFirstGap(){
 			return [this] (int l, UBNUM startVal, UBNUM  endVal) {return getFirstGap_improVII(l, startVal, endVal);};
 	}
 }
-function<bool(int ,UBNUM)> sqfMarmet::func_checkSequence(){
+function<bool(UBNUM)> sqfMarmet::func_ValueChecker(){
 	if (m_cntPrimeFactors > 1){
 		static_assert (m_improvement == 5);
-		return [this] (int l, UBNUM N) {return checkSequenceDouble(l, N);};
-	}	
+		return [this] (UBNUM n) {return checkValDouble(n);};
+	}
+	// plain powers
+	return [this] (UBNUM n) {return checkValPower(n);};	
 }
 void sqfMarmet::fillNumArrays() {
     fillNP2Min();
@@ -600,12 +603,12 @@ UBNUM sqfMarmet::getFirstGap_improV(int l, UBNUM startVal, UBNUM  endVal) {
 UBNUM sqfMarmet::getFirstGap_improVII(int l, UBNUM startVal, UBNUM  endVal){
 	return getNextSqFulGap_improVII(startVal);
 }
-bool sqfMarmet::checkSequenceDouble (int gaplen, UBNUM N){
-	Factor oFactor;
+bool sqfMarmet::checkSequence (int gaplen, UBNUM N){
+    auto checkFunc = func_ValueChecker();
 	UBNUM n = N;	
 	for(bool bOk = true ; bOk;n++){
-		cout << n << " = " << oFactor.prnFactor(n) << endl;		
-		bOk = oFactor.IsDoubleSquareFul(n);
+		cout << n << " = " << m_oFactor.prnFactor(n) << endl;		
+        bOk = checkFunc(n);
 	}
 	int gl = n - N - 1;
 	if (gl < gaplen){
@@ -616,6 +619,12 @@ bool sqfMarmet::checkSequenceDouble (int gaplen, UBNUM N){
 		cout << "Found bigger gap: " << gl << endl;
 	}
 	return true;
+}
+bool sqfMarmet::checkValPower (UBNUM n){
+    return m_oFactor.hasPower(n, m_exp);
+}
+bool sqfMarmet::checkValDouble (UBNUM n){
+    return m_oFactor.IsDoubleSquareFul(n);
 }
 
 void sqfMarmet::batchCalc(UBNUM startVal, UBNUM endVal, int mins, enBatchMode batchMode, int startNr){
@@ -629,7 +638,7 @@ void sqfMarmet::batchCalc(UBNUM startVal, UBNUM endVal, int mins, enBatchMode ba
 		if (gapNum != 0){
 			startNr++;
 			cout << startNr << ". " << gapNum  << ": ~< 10^" << to_string(gapNum).length() << endl;
-			if (not func_checkSequence()(m_gaplen, gapNum)){
+			if (not checkSequence(m_gaplen, gapNum)){
 				cout << "Error in sequence !";
 				break;
 			}
@@ -674,13 +683,14 @@ void sqfMarmet::exec() {
 // ***********************************************************************************************//
 // ************************************INPUT PARAMETERS FOR CALCULATION **************************//	
 // ***********************************************************************************************//
-	m_cntPrimeFactors = 2; // 1: for numbers with divisors p^e, 2: for numbers with divisors p^e*q^e
-	m_exp = 2; // exponent of the prime power p^e 
-	int gaplength = 5; // length of the sequence having the desired prime factors
-	UBNUM startVal =    218574161663624; // Find sequences starting above startVal
+	m_cntPrimeFactors = 1; // 1: for numbers with divisors p^e, 2: for numbers with divisors p^e*q^e
+	m_exp = 3; // exponent of the prime power p^e 
+	int gaplength = 7; // length of the sequence having the desired prime factors
+	UBNUM startVal =    2287355532961372; // Find sequences starting above startVal
 	UBNUM endVal   =    1; // Terminating if no sequence is found below endVal
 	int timeInMins = 120; // In batch mode: Stop if a sequence is found and the program has been running for more than timeInMins minutes.
-	int startNr = 1603; // Counter used in output.
+	int startNr = 544; // Counter used in output.
+	bool doBatch = true; // batch mode ?
 // ***********************************************************************************************//
 // ************************************INPUT PARAMETERS FOR CALCULATION **************************//	
 // ***********************************************************************************************//
@@ -693,9 +703,11 @@ void sqfMarmet::exec() {
 	fillFunc(gaplength, startVal);
 	cout << "Time to fill array/vector: " << GetTime() - dStartTime << " secs" << endl;
 	
-	batchCalcTime(startVal, timeInMins, startNr);
-	cout << endl;
-	return;
+	if (doBatch){
+		batchCalcTime(startVal, timeInMins, startNr);
+		cout << endl;
+		return;
+	}
 	
     dStartTime = GetTime();
     cout << "algorithm/improvement: " << m_improvement << endl;

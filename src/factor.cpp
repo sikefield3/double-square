@@ -122,3 +122,15 @@ bool Factor::IsDoubleSquareFul() const{
 	Factor oFc;
 	return oFc.LittleOmega(m_n / radical()) >= 2;
 }
+bool Factor::hasPower(UBNUM n, int exp){
+	doFactor(n);
+	return hasPower(exp);
+}
+bool Factor::hasPower(int exp) const{
+	for (auto pr_exp : exp_ary){
+		if (pr_exp >= exp){
+			return true;
+		}
+	}
+	return false;
+}

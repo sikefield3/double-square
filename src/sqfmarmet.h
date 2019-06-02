@@ -56,6 +56,7 @@ using namespace NTL;
 class sqfMarmet
 {	
 	sqfSorter m_oSqfSorter;
+    Factor m_oFactor;
 	
 	static const size_t m_NP2minLen = 21;
 	static const int m_improvement = 5;
@@ -100,7 +101,7 @@ private:
 	
 	function<UBNUM(int, UBNUM, UBNUM)> func_getFirstGap();
 	function<void(int, UBNUM)> func_fillNumArrays();
-	function<bool(int, UBNUM)> func_checkSequence();
+	function<bool(UBNUM)> func_ValueChecker();
 	
 	void initNumArrays();
 	void fillpow2();
@@ -132,8 +133,10 @@ private:
 	void setNRemainders(UBNUM N);
 	void initNSQFAry(BNUM startVal);
 	void sortAry();
-	void sortAlgo();	
-	bool checkSequenceDouble (int gaplen, UBNUM N);
+	void sortAlgo();
+    bool checkValDouble (UBNUM n);
+    bool checkValPower (UBNUM n);
+	bool checkSequence (int gaplen, UBNUM N);
 	void batchCalc(UBNUM startVal, UBNUM endVal, int mins, enBatchMode batchMode, int startNr);
 	void prnTimeStamp(string sText) const;
 	// debug functions

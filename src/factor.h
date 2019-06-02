@@ -54,7 +54,8 @@ public:
 	UBNUM radical() const;
 	bool IsDoubleSquareFul(UBNUM n);
 	bool IsDoubleSquareFul() const;
-	
+	bool hasPower(UBNUM n, int exp);
+    bool hasPower(int exp) const;
 };
 
 #endif // FACTOR_H
